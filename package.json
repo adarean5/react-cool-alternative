@@ -18,6 +18,9 @@
     "url": "https://github.com/adarean5/react-cool-alternative/issues"
   },
   "homepage": "https://github.com/adarean5/react-cool-alternative#readme",
+  "engines": {
+    "npm": "8.x.x"
+  },
   "dependencies": {
     "esbuild": "^0.15.10"
   }
