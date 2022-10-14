@@ -1,0 +1,24 @@
+{
+  "name": "react-cool-alternative",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "esbuild --jsx-factory=h index.tsx > bundle.js",
+    "serve": "esbuild --jsx-factory=h --servedir=public --outdir=public/js --serve index.tsx"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adarean5/react-cool-alternative.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adarean5/react-cool-alternative/issues"
+  },
+  "homepage": "https://github.com/adarean5/react-cool-alternative#readme",
+  "dependencies": {
+    "esbuild": "^0.15.10"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2020" ,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsxFragmentFactory": "Fragment",
+    "strict": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true
+  }
+}
