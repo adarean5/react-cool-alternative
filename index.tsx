@@ -11,15 +11,29 @@ type CoolElement = keyof HTMLElementTagNameMap;
 const Fragment = "Fragment";
 
 function useState(initialState) {
+  console.log("UseState called", currentContext);
+  if (currentContext.hooks[currentContext.count]) {
+    return currentContext.hooks[currentContext.count++];
+  }
+
   let state = initialState;
   const setState = (value) => {
     console.log("State change", state, value);
+    console.log("Current context", currentContext);
 
     state = value;
+
+    const renderedElement = currentContext.render();
+    console.log("Rendered Element", renderedElement.innerHTML);
   };
 
-  return [state, setState] as const;
+  const stateObjects = [state, setState] as const;
+  currentContext.hooks.push(stateObjects)
+
+  return stateObjects;
 }
+
+let currentContext;
 
 function h(
   type: Component["type"],
@@ -29,7 +43,15 @@ function h(
   if (typeof type === "function") {
     // Custom component
     //
-    return type({ ...props, children });
+
+    const render = () => {
+      currentContext.count = 0;
+      return type({ ...props, children });
+    }
+
+    currentContext = {render, count: 0, hooks: []}
+
+    return render();
   }
 
   const ele = document.createElement(type);
@@ -87,13 +109,6 @@ function h(
   );
 
   return ele;
-}
-
-function render(component: Component, container: Element) {
-  if (typeof component === "string") {
-    container.append();
-  } else {
-  }
 }
 
 const items = [
