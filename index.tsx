@@ -101,37 +101,61 @@ const html = (
   </div>
 );
 
+function Signal(initialValue) {
+  let value = initialValue;
+  const Emitter = {
+    listeners: new Set<Function>(),
+    subscribe(fn) {
+      console.log("subscribe", fn);
+      this.listeners.add(fn);
+      fn(value);
+      return () => this.listeners.delete(fn);
+    },
+    publish(nextValue) {
+      if (typeof nextValue === "function") {
+        nextValue = nextValue(value);
+      }
+      value = nextValue;
+      [...this.listeners].forEach((listener) => listener(value));
+    },
+  };
+  return [Emitter.publish.bind(Emitter), Emitter.subscribe.bind(Emitter)];
+}
+
 function CustomComponent() {
-  let span;
-  const [toggle, setToggle] = useState(false);
+  let toggle = false;
+  const [pub, sub] = Signal(toggle);
 
   return (
     <div>
       <span
-        ref={(node) => {
-          span = node;
+        ref={(element) => {
+          console.log("ref", element);
+          sub((t) => {
+            console.log("got it", t);
+            // element.innerHTML = t ? "ON" : "OFF";
+            element.replaceChildren(<RenderProps value={t} />);
+          });
         }}
       >
-        Me works!!! 🤣{" "}
+        Loading...
       </span>
-      <span>{toggle ? "ON" : "OFF"}</span>
       <button
         onClick={() => {
-          setToggle(!toggle);
-        }}
-      >
-        Toggle it
-      </button>
-      <button
-        onClick={() => {
-          if (span) {
-            span.innerText = "Yay";
-          }
+          pub((current) => !current);
         }}
       >
         Press me
       </button>
     </div>
+  );
+}
+
+function RenderProps(props) {
+  return (
+    <pre>
+      <code>{JSON.stringify(props, null, 2)}</code>
+    </pre>
   );
 }
 

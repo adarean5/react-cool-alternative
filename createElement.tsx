@@ -45,27 +45,13 @@ export function h(
   ...children: Component["children"]
 ) {
   if (typeof type === "function") {
-    // Custom component
-    //
-
-    const render = () => {
-      currentContext.count = 0;
-      const result = type({ ...props, children });
-      currentContext.element?.replaceWith(result);
-      currentContext.element = result;
-      return result;
-    };
-
-    currentContext = { render, count: 0, hooks: [], element: undefined };
-
-    return render();
+    return type({ ...props, children });
   }
 
   const ele = document.createElement(type);
 
   // Object.assign(ele, props);
   const { ref, style, className, dataset, ...attr } = props ?? {};
-  if (typeof ref === "function") ref(ele);
 
   if (typeof style === "object") {
     Object.assign(ele.style, style);
@@ -115,5 +101,6 @@ export function h(
       .flat(Infinity)
   );
 
+  if (typeof ref === "function") ref(ele);
   return ele;
 }
