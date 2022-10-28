@@ -1,122 +1,4 @@
-type Props = Record<string, unknown>;
-
-type Component = {
-  type: CoolElement | ((props) => HTMLElement | string);
-  props: Props;
-  children: any[];
-};
-
-type CoolElement = keyof HTMLElementTagNameMap;
-
-const Fragment = "Fragment";
-
-function useState(initialState) {
-  console.log("UseState called", currentContext);
-  if (currentContext.hooks[currentContext.count]) {
-    return currentContext.hooks[currentContext.count++]();
-  }
-
-  let state = initialState;
-
-  const hook = () => {
-    const setState = (value) => {
-      console.log("State change", state, value);
-      console.log("Current context", currentContext);
-
-      state = value;
-
-      const renderedElement = currentContext.render();
-      console.log("Rendered Element", renderedElement.innerHTML);
-    };
-
-    return [state, setState] as const;
-  };
-
-  currentContext.hooks.push(hook);
-
-  return hook();
-}
-
-let currentContext;
-
-function h(
-  type: Component["type"],
-  props: Component["props"],
-  ...children: Component["children"]
-) {
-  if (typeof type === "function") {
-    // Custom component
-    //
-
-    const render = () => {
-      currentContext.count = 0;
-      const result = type({ ...props, children });
-      currentContext.element?.replaceWith(result);
-      currentContext.element = result;
-      return result;
-    };
-
-    currentContext = { render, count: 0, hooks: [], element: undefined };
-
-    return render();
-  }
-
-  const ele = document.createElement(type);
-
-  // Object.assign(ele, props);
-  const { ref, style, className, dataset, ...attr } = props ?? {};
-  if (typeof ref === "function") ref(ele);
-
-  if (typeof style === "object") {
-    Object.assign(ele.style, style);
-  }
-
-  if (typeof className === "string") {
-    ele.className = className;
-  }
-
-  if (typeof dataset === "object") {
-    Object.assign(ele.dataset, dataset);
-  }
-
-  Object.entries(attr).forEach(([key, val]) => {
-    if (key.startsWith("on") && typeof val === "function") {
-      ele.addEventListener(
-        key.toLowerCase().replace("on", ""),
-        val as EventListenerOrEventListenerObject
-      );
-    } else if (val === false) {
-      //
-    } else {
-      ele.setAttribute(key, val as string);
-    }
-  });
-
-  // console.log(children, ele);
-
-  ele.append(
-    ...children
-      .map((child) => {
-        // console.log("Condition", typeof child?.nodeType === "number");
-        if (
-          typeof child === "object" &&
-          typeof child?.nodeType !== "number" &&
-          !Array.isArray(child)
-        ) {
-          return (
-            <pre>
-              <code>{JSON.stringify(child, null, 2)}</code>
-            </pre>
-          );
-        } else {
-          return child;
-        }
-      })
-      .flat(Infinity)
-  );
-
-  return ele;
-}
+import { h, Fragment, useState, render } from './createElement';
 
 const items = [
   { planet: "Mercury", size: 2.44 },
@@ -218,9 +100,18 @@ const html = (
   </div>
 );
 
+function Second() {
+  const [toggle, setToggle] = useState(false);
+  return (<div>
+    {toggle.toString()}
+    <button onClick={()=>setToggle(!toggle)} >Toggle 3</button>
+  </div>)
+}
+
 function CustomComponent() {
   let span;
   const [toggle, setToggle] = useState(false);
+  const [toggle2, setToggle2] = useState(true);
 
   return (
     <div>
@@ -232,12 +123,20 @@ function CustomComponent() {
         Me works!!! 🤣{" "}
       </span>
       <span>{toggle ? "ON" : "OFF"}</span>
+      <span>{toggle2 ? "Yeees" : "Noooooes"}</span>
       <button
         onClick={() => {
           setToggle(!toggle);
         }}
       >
         Toggle it
+      </button>
+      <button
+        onClick={() => {
+          setToggle2(!toggle2);
+        }}
+      >
+        Toggle second
       </button>
       <button
         onClick={() => {
@@ -248,6 +147,7 @@ function CustomComponent() {
       >
         Press me
       </button>
+      <Second></Second>
     </div>
   );
 }
@@ -262,4 +162,6 @@ function CustomComponent() {
 //   ))}
 // </ul></div>)
 
-document.body.append(html);
+
+
+document.body.append(render(html));

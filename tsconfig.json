@@ -3,7 +3,7 @@
     "target": "es2020" ,
     "jsx": "react",
     "jsxFactory": "h",
-    "module": "commonjs",
+    "module": "ES2020",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "jsxFragmentFactory": "Fragment",
