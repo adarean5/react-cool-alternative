@@ -10,6 +10,17 @@ type CoolElement = keyof HTMLElementTagNameMap;
 
 const Fragment = "Fragment";
 
+function useState(initialState) {
+  let state = initialState;
+  const setState = (value) => {
+    console.log("State change", state, value);
+
+    state = value;
+  };
+
+  return [state, setState] as const;
+}
+
 function h(
   type: Component["type"],
   props: Component["props"],
@@ -52,12 +63,12 @@ function h(
     }
   });
 
-  console.log(children, ele);
+  // console.log(children, ele);
 
   ele.append(
     ...children
       .map((child) => {
-        console.log("Condition", typeof child?.nodeType === "number");
+        // console.log("Condition", typeof child?.nodeType === "number");
         if (
           typeof child === "object" &&
           typeof child?.nodeType !== "number" &&
@@ -107,7 +118,7 @@ const html = (
     <span style="color: green">Style as string</span>
     <span style={{ color: "red" }}>Style as object</span>
     <div
-      onMouseMove={(ev: MouseEvent) => console.log(ev)}
+      // onMouseMove={(ev: MouseEvent) => console.log(ev)}
       style={{
         padding: "20px",
         border: "1px dashed #ccc",
@@ -187,6 +198,8 @@ const html = (
 
 function CustomComponent() {
   let span;
+  const [toggle, setToggle] = useState(false);
+
   return (
     <div>
       <span
@@ -196,6 +209,14 @@ function CustomComponent() {
       >
         Me works!!! 🤣{" "}
       </span>
+      <span>{toggle ? "ON" : "OFF"}</span>
+      <button
+        onClick={() => {
+          setToggle(!toggle);
+        }}
+      >
+        Toggle it
+      </button>
       <button
         onClick={() => {
           if (span) {
