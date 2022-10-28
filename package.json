@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "esbuild --jsx-factory=h index.tsx > bundle.js",
-    "serve": "esbuild --jsx-factory=h --servedir=public --outdir=public/js --serve index.tsx"
+    "serve": "esbuild --bundle --jsx-factory=h --servedir=public --outdir=public/js --serve index.tsx"
   },
   "repository": {
     "type": "git",
