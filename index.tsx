@@ -13,24 +13,28 @@ const Fragment = "Fragment";
 function useState(initialState) {
   console.log("UseState called", currentContext);
   if (currentContext.hooks[currentContext.count]) {
-    return currentContext.hooks[currentContext.count++];
+    return currentContext.hooks[currentContext.count++]();
   }
 
   let state = initialState;
-  const setState = (value) => {
-    console.log("State change", state, value);
-    console.log("Current context", currentContext);
 
-    state = value;
+  const hook = () => {
+    const setState = (value) => {
+      console.log("State change", state, value);
+      console.log("Current context", currentContext);
 
-    const renderedElement = currentContext.render();
-    console.log("Rendered Element", renderedElement.innerHTML);
+      state = value;
+
+      const renderedElement = currentContext.render();
+      console.log("Rendered Element", renderedElement.innerHTML);
+    };
+
+    return [state, setState] as const;
   };
 
-  const stateObjects = [state, setState] as const;
-  currentContext.hooks.push(stateObjects)
+  currentContext.hooks.push(hook);
 
-  return stateObjects;
+  return hook();
 }
 
 let currentContext;
@@ -46,10 +50,13 @@ function h(
 
     const render = () => {
       currentContext.count = 0;
-      return type({ ...props, children });
-    }
+      const result = type({ ...props, children });
+      currentContext.element?.replaceWith(result);
+      currentContext.element = result;
+      return result;
+    };
 
-    currentContext = {render, count: 0, hooks: []}
+    currentContext = { render, count: 0, hooks: [], element: undefined };
 
     return render();
   }
