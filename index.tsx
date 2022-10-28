@@ -1,4 +1,4 @@
-import { h, Fragment, useState, render } from './createElement';
+import { h, Fragment, useState } from "./createElement";
 
 const items = [
   { planet: "Mercury", size: 2.44 },
@@ -96,6 +96,7 @@ const html = (
     <button disabled={false}>Boolean attributes (disabled=false)</button>
     <button disabled={true}>Boolean attributes (disabled=true)</button>
     <br />
+    <CustomComponent />
     <CustomComponent />
   </div>
 );
