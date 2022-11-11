@@ -58,6 +58,25 @@ const localStorageStorage: Storage<Todo> = {
     Promise.resolve(localStorage.setItem(todosKey, JSON.stringify(data))),
 };
 
+const Spinner = () => {
+  return (
+    <div class="lds-spinner">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  );
+};
+
 const ToDo = () => {
   const [pub, sub] = Signal<Todo[]>([]);
   const [setIsLoading, getIsLoading] = Signal<boolean>(true);
@@ -118,7 +137,7 @@ const ToDo = () => {
             });
           }}
         >
-          Loading ...
+          <Spinner />
         </div>
         <ul
           ref={(listRef) => {
