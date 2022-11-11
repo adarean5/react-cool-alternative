@@ -10,16 +10,28 @@ type Todo = {
 type TodoItemProps = {
   todo: Todo;
   toggle: () => void;
+  remove: () => void;
 };
 
-const TodoItem = ({ todo, toggle }: TodoItemProps) => {
+const css = (strings, ...args) => {
+}
+
+const styles = css`
+.list-item {
+  background-color: red;
+}
+`;
+ 
+const buttonStyle = {backgroundColor: 'blue'};
+
+const TodoItem = ({ todo, toggle, remove }: TodoItemProps) => {
   return (
-    <li>
+    <li class="list-item">
       <label>
         <input type="checkbox" checked={todo.done} onChange={toggle} />
         {todo.text}
       </label>
-      <button>Delete</button>
+      <button onclick={remove} style={buttonStyle}>Delete</button>
     </li>
   );
 };
@@ -42,8 +54,17 @@ const ToDo = () => {
     );
   };
 
+  const handleRemove = (id: number) => () => {
+    pub((current) =>
+      current.filter((curEle) =>
+        curEle.id !== id
+      )
+    );
+  };
+
   return (
     <div>
+      <style>{styles}</style>
       <input ref={(el) => (inputRef = el)} />
       <button
         onclick={() => {
@@ -68,7 +89,7 @@ const ToDo = () => {
               console.log(elements);
               listRef.replaceChildren(
                 ...elements.map((ele) => (
-                  <TodoItem todo={ele} toggle={handleToggle(ele.id)} />
+                  <TodoItem todo={ele} toggle={handleToggle(ele.id)} remove={handleRemove(ele.id)} />
                 ))
               );
             });
