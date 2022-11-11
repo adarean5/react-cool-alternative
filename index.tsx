@@ -1,11 +1,21 @@
-import { h } from './src/createElement';
-import { Signal } from './src/state';
+import { h } from "./src/createElement";
+import { Signal } from "./src/state";
+
+type ToDO = {
+  text: string
+  done: boolean
+  id: number
+}
 
 const ToDo = () => {
-  const [pub, sub] = Signal([]);
+  const [pub, sub] = Signal<ToDO[]>([]);
   let inputRef;
+  let listRef;
 
-  sub(console.log);
+  sub((elements) => {
+    console.log(elements);
+    listRef.replaceChildren(...elements.map((ele) => <li onclick={() => { pub(current => current.map(curEle => curEle.id == ele.id ? {...curEle, done: !ele.done} : curEle )) }}>{ele.text}</li>));
+  });
 
   return (
     <div>
@@ -18,7 +28,7 @@ const ToDo = () => {
               done: false,
             });
 
-            inputRef.value = '';
+            inputRef.value = "";
 
             return newToDos;
           });
@@ -27,9 +37,7 @@ const ToDo = () => {
         Add TODO
       </button>
       <div>
-        <ul>
-          <li>Item 1</li>
-        </ul>
+        <ul ref={(el) => (listRef = el)} />
       </div>
     </div>
   );

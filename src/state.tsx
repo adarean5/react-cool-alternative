@@ -1,14 +1,14 @@
-export function Signal(initialValue) {
+export function Signal<T>(initialValue: T) {
   let value = initialValue;
   const Emitter = {
     listeners: new Set<Function>(),
-    subscribe(fn) {
+    subscribe(fn: (value: T) => void) {
       console.log("subscribe", fn);
       this.listeners.add(fn);
-      fn(value);
+      // fn(value);
       return () => this.listeners.delete(fn);
     },
-    publish(nextValue) {
+    publish(nextValue: T | ((current: T) => T)){
       if (typeof nextValue === "function") {
         nextValue = nextValue(value);
       }
