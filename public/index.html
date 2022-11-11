@@ -1,13 +1,55 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
-</head>
-<body>
+    <style>
+      .app {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      button {
+        background-color: white;
+        border: none;
+        height: 2rem;
+        padding: 0 1rem;
+        margin: 0 1rem;
+        border: 1px solid black;
+      }
+
+      form.todoForm {
+        margin-top: 2rem;
+      }
+
+      form.todoForm label {
+        display: block;
+        margin-bottom: 1rem;
+        text-align: left;
+      }
+
+      form.todoForm .inputContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      form.todoForm input[type='text'] {
+        height: 2rem;
+        border: none;
+        padding: 0 1rem;
+        font-size: 1.2rem;
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
     <script src="js/index.js"></script>
-</body>
+  </body>
 </html>
