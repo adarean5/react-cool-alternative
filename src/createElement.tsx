@@ -10,6 +10,15 @@ type CoolElement = keyof HTMLElementTagNameMap;
 
 export const Fragment = "Fragment";
 
+let currentStyleContext: string[] = [];
+let styleCounter = 0;
+export const css = (strings, ...args) => {
+  const className = `css_${styleCounter++}`;
+  console.log('add', `.${className} { ${strings.raw.join('')}}`);
+  currentStyleContext.push(`.${className} { ${strings.raw.join('')}}`)
+  return className;
+}
+
 export function useState(initialState) {
   console.log("UseState called", currentContext);
   if (currentContext.hooks[currentContext.count]) {
@@ -44,8 +53,21 @@ export function h(
   props: Component["props"],
   ...children: Component["children"]
 ) {
+  
+  const wrapStyleResult = (resultElement: string | HTMLElement) => {
+    console.log('result style', currentStyleContext);
+    const resultStyle = currentStyleContext.join('\n');
+    if (currentStyleContext.length) {
+      currentStyleContext = [];
+      return <>{resultElement}<style>{resultStyle}</style></>
+      
+    }
+    return resultElement;
+  }
   if (typeof type === "function") {
-    return type({ ...props, children });
+    const functionResult = type({ ...props, children });
+
+    return wrapStyleResult(functionResult);
   }
 
   const ele = document.createElement(type);
@@ -102,5 +124,5 @@ export function h(
   );
 
   if (typeof ref === "function") ref(ele);
-  return ele;
+  return wrapStyleResult(ele);
 }

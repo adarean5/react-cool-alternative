@@ -1,4 +1,4 @@
-import { h } from './src/createElement';
+import { css, h } from './src/createElement';
 import { Signal } from './src/state';
 
 type Todo = {
@@ -13,20 +13,13 @@ type TodoItemProps = {
   remove: () => void;
 };
 
-const css = (strings, ...args) => {
-}
-
-const styles = css`
-.list-item {
-  background-color: red;
-}
-`;
  
 const buttonStyle = {backgroundColor: 'blue'};
 
 const TodoItem = ({ todo, toggle, remove }: TodoItemProps) => {
+  const listItemClass = css`background-color: red;`
   return (
-    <li class="list-item">
+    <li class={listItemClass}>
       <label>
         <input type="checkbox" checked={todo.done} onChange={toggle} />
         {todo.text}
@@ -64,7 +57,7 @@ const ToDo = () => {
 
   return (
     <div>
-      <style>{styles}</style>
+      
       <input ref={(el) => (inputRef = el)} />
       <button
         onclick={() => {
@@ -102,4 +95,4 @@ const ToDo = () => {
 
 const html = <ToDo></ToDo>;
 
-document.body.append(render(html));
+document.body.append(html);
