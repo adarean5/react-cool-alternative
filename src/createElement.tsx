@@ -22,7 +22,6 @@ export const css = (strings, ...args) => {
 };
 
 export function useState(initialState) {
-  console.log('UseState called', currentContext);
   if (currentContext.hooks[currentContext.count]) {
     return currentContext.hooks[currentContext.count++]();
   }
@@ -31,13 +30,9 @@ export function useState(initialState) {
 
   const hook = () => {
     const setState = (value) => {
-      console.log('State change', state, value);
-      console.log('Current context', currentContext);
-
       state = value;
 
       const renderedElement = currentContext.render();
-      console.log('Rendered Element', renderedElement.innerHTML);
     };
 
     return [state, setState] as const;
@@ -56,7 +51,6 @@ export function h(
   ...children: Component['children']
 ) {
   const wrapStyleResult = (resultElement: string | HTMLElement) => {
-    console.log('result style', currentStyleContext);
     const resultStyle = currentStyleContext.join('\n');
     if (currentStyleContext.length) {
       currentStyleContext = [];
@@ -106,12 +100,9 @@ export function h(
     }
   });
 
-  // console.log(children, ele);
-
   ele.append(
     ...children
       .map((child) => {
-        // console.log("Condition", typeof child?.nodeType === "number");
         if (
           typeof child === 'object' &&
           typeof child?.nodeType !== 'number' &&

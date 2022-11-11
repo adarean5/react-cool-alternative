@@ -2,10 +2,13 @@ export function Signal<T>(initialValue: T) {
   let value = initialValue;
   const Emitter = {
     listeners: new Set<Function>(),
-    subscribe(fn: (value: T) => void) {
+    subscribe(fn: (value: T) => void, sendInitialValue = true) {
       console.log('subscribe', fn);
       this.listeners.add(fn);
-      fn(value);
+      if (sendInitialValue) {
+        fn(value);
+      }
+
       return () => this.listeners.delete(fn);
     },
     publish(nextValue: T | ((current: T) => T)) {

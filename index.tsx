@@ -40,15 +40,31 @@ const TodoItem = ({ todo, toggle, remove }: TodoItemProps) => {
   );
 };
 
+const todosKey = 'todos';
+
+interface Storage<T> {
+  load: () => Promise<T[]>;
+  save: (value: T[]) => Promise<void>;
+}
+
+const localStorageStorage: Storage<Todo> = {
+  load: () =>
+    new Promise((resolve) =>
+      setTimeout(() => {
+        resolve(JSON.parse(localStorage.getItem(todosKey) ?? '[]'));
+      }, 500)
+    ),
+  save: (data) =>
+    Promise.resolve(localStorage.setItem(todosKey, JSON.stringify(data))),
+};
+
 const ToDo = () => {
-  const [pub, sub] = Signal<Todo[]>([
-    {
-      text: 'test',
-      done: false,
-      id: 1,
-    },
-  ]);
-  let inputRef;
+  const [pub, sub] = Signal<Todo[]>([]);
+  const [setIsLoading, getIsLoading] = Signal<boolean>(true);
+  localStorageStorage.load().then((data) => {
+    setIsLoading(false);
+    pub(data);
+  });
 
   const handleToggle = (id: number) => () => {
     pub((current) =>
@@ -61,6 +77,8 @@ const ToDo = () => {
   const handleRemove = (id: number) => () => {
     pub((current) => current.filter((curEle) => curEle.id !== id));
   };
+
+  sub(localStorageStorage.save, false);
 
   return (
     <div class="app">
@@ -93,6 +111,15 @@ const ToDo = () => {
         </div>
       </form>
       <div>
+        <div
+          ref={(loaderRef) => {
+            getIsLoading((loading) => {
+              loaderRef.style.display = loading ? 'block' : 'none';
+            });
+          }}
+        >
+          Loading ...
+        </div>
         <ul
           ref={(listRef) => {
             sub((elements: Todo[]) => {
