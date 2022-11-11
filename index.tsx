@@ -13,23 +13,17 @@ type TodoItemProps = {
   remove: () => void;
 };
 
-const buttonStyle = { backgroundColor: 'blue' };
-
 const TodoItem = ({ todo, toggle, remove }: TodoItemProps) => {
-  const listItemClass = css`
-    background-color: red;
-  `;
   const textClass = css`
     text-decoration: ${todo.done ? 'line-through' : 'none'};
   `;
   return (
-    <li class={listItemClass}>
+    <li class="toDoItem">
       <label class={textClass}>
         <input type="checkbox" checked={todo.done} onChange={toggle} />
         {todo.text}
       </label>
-      <button onclick={remove} style={buttonStyle}>
-        Delete
+      <button class="iconButton" onclick={remove}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="20"
@@ -37,7 +31,7 @@ const TodoItem = ({ todo, toggle, remove }: TodoItemProps) => {
           viewBox="0 0 448 512"
         >
           <path
-            fill={todo?.done ? 'green' : 'yellow'}
+            fill={todo?.done ? 'green' : 'currentColor'}
             d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"
           ></path>
         </svg>
@@ -75,14 +69,18 @@ const ToDo = () => {
         class="todoForm"
         onsubmit={(event) => {
           event.preventDefault();
+          const formData = new FormData(event.target);
+          const todoName = formData.get('task') as string;
+
+          if (!todoName?.length) return;
 
           pub((current) => {
             const newToDos = current.concat({
-              text: inputRef.value,
+              text: todoName,
               done: false,
               id: Date.now() + Math.random(),
             });
-            inputRef.value = '';
+            event.target.reset();
 
             return newToDos;
           });
@@ -94,13 +92,10 @@ const ToDo = () => {
           <button type="submit">Add</button>
         </div>
       </form>
-      <input />
-      <button>Add TODO</button>
       <div>
         <ul
           ref={(listRef) => {
             sub((elements: Todo[]) => {
-              console.log(elements);
               listRef.replaceChildren(
                 ...elements.map((ele) => (
                   <TodoItem

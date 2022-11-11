@@ -9,6 +9,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
     <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        background: #fff;
+        color: #000;
+      }
+
       .app {
         display: flex;
         flex-direction: column;
@@ -46,6 +54,50 @@
         padding: 0 1rem;
         font-size: 1.2rem;
         border: 1px solid black;
+      }
+
+      .iconButton {
+        background-color: transparent;
+        padding: 0;
+        padding-top: 0.2rem;
+        border: none;
+      }
+
+      .toDoItem .iconButton {
+        background-color: transparent;
+        padding: 0;
+        padding-top: 0.2rem;
+        border: none;
+      }
+
+      .toDoItem.iconButton svg {
+        fill: black;
+      }
+
+      li.toDoItem {
+        margin: 1rem 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+      }
+
+      .toDoItem input[type="checkbox"] {
+        display: none;
+      }
+
+      .toDoItem input[type="checkbox"] + label {
+        cursor: pointer;
+      }
+
+      .toDoItem input[type="checkbox"]:checked + label {
+        text-decoration: line-through;
+      }
+
+      ul {
+        list-style: none;
+        margin-top: 3rem;
+        padding: 0;
       }
     </style>
   </head>
