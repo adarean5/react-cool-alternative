@@ -45,11 +45,12 @@ export function useState(initialState) {
 
 let currentContext;
 
-export function h(
-  type: Component['type'],
-  props: Component['props'],
-  ...children: Component['children']
-) {
+export function render(component: Component | string) {
+  console.log('Render args', component);
+  if (typeof component === 'string') return component;
+
+  const { type, props, children } = component;
+
   const wrapStyleResult = (resultElement: string | HTMLElement) => {
     const resultStyle = currentStyleContext.join('\n');
     if (currentStyleContext.length) {
@@ -63,11 +64,6 @@ export function h(
     }
     return resultElement;
   };
-  if (typeof type === 'function') {
-    const functionResult = type({ ...props, children });
-
-    return wrapStyleResult(functionResult);
-  }
 
   const { createElement } = getCurrentNamespace(type);
   const ele = createElement(type);
@@ -102,26 +98,26 @@ export function h(
 
   ele.append(
     ...children
-      .map((child) => {
-        if (
-          typeof child === 'object' &&
-          typeof child?.nodeType !== 'number' &&
-          !Array.isArray(child)
-        ) {
-          return (
-            <pre>
-              <code>{JSON.stringify(child, null, 2)}</code>
-            </pre>
-          );
-        } else {
-          return child;
-        }
-      })
-      .flat(Infinity)
+      // .map((child) => {
+      //   if (
+      //     typeof child === 'object' &&
+      //     typeof child?.nodeType !== 'number' &&
+      //     !Array.isArray(child)
+      //   ) {
+      //     return (
+      //       <pre>
+      //         <code>{JSON.stringify(child, null, 2)}</code>
+      //       </pre>
+      //     );
+      //   } else {
+      //     return child;
+      //   }
+      // })
+      .map(render)
   );
 
   if (typeof ref === 'function') ref(ele);
-  return wrapStyleResult(ele);
+  return ele;
 }
 
 function getCurrentNamespace(type) {
@@ -137,4 +133,19 @@ function getCurrentNamespace(type) {
         createElement: document.createElement.bind(document),
       };
   }
+}
+
+export function h(
+  type: Component['type'],
+  props: Component['props'],
+  ...children: Component['children']
+) {
+  if (typeof type === 'function') {
+    return type({ ...props, children });
+  }
+  return {
+    type,
+    props,
+    children,
+  };
 }

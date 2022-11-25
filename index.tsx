@@ -1,4 +1,4 @@
-import { css, h } from './src/createElement';
+import { css, render, h } from './src/render';
 import { Signal } from './src/state';
 
 type Todo = {
@@ -143,13 +143,15 @@ const ToDo = () => {
           ref={(listRef) => {
             sub((elements: Todo[]) => {
               listRef.replaceChildren(
-                ...elements.map((ele) => (
-                  <TodoItem
-                    todo={ele}
-                    toggle={handleToggle(ele.id)}
-                    remove={handleRemove(ele.id)}
-                  />
-                ))
+                ...elements.map((ele) =>
+                  render(
+                    <TodoItem
+                      todo={ele}
+                      toggle={handleToggle(ele.id)}
+                      remove={handleRemove(ele.id)}
+                    />
+                  )
+                )
               );
             });
           }}
@@ -160,5 +162,8 @@ const ToDo = () => {
 };
 
 const html = <ToDo></ToDo>;
+console.log('HTML', html);
 
-document.body.append(html);
+let elements = render(html);
+console.log('Render result', elements);
+document.body.append(elements);
